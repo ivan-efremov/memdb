@@ -1,5 +1,9 @@
 # memdb
 Database in memory
+
+For build, cd this project and run shell command $ make all
+For clean binary files run shell command $ make clean
+
 Easy create database in memory, for example,
 1. Create table person:
 
