@@ -317,6 +317,25 @@ void Table::createIndex(const std::string& a_columnName)
   }
 }
 
+void Table::findByIndex(
+  const std::string& a_columnName,
+  const Data& a_data,
+  const std::function<void(PRecord,size_t)>& a_fn) const
+{
+  auto idx = m_indexes.find(a_columnName);
+  if(idx != m_indexes.end()) {
+    PIndex index = idx->second;
+    auto it = index->m_index.find(a_data.hash());
+    if(it != index->m_index.end()) {
+      Index::PListRecordIds recIds = it->second;
+      for(auto r=recIds->begin(); r!=recIds->end(); ++r) {
+        PRecord record = m_records.at(*r);
+        a_fn(record, index->m_column);
+      }
+    }
+  }
+}
+
 void Table::deleteRecord(size_t a_irecord)
 {
   m_records.erase(m_records.begin() + a_irecord);

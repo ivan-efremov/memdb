@@ -19,7 +19,7 @@ int main(int argc, const char* argv[])
     table->createIndex("id");
     table->createIndex("num");
     gettimeofday(&t1, NULL);
-    for(size_t i=0; i<1000000; ++i) {
+    for(size_t i=0; i<10000; ++i) {
       PRecord record = std::make_shared<Record>();
       record->emplace_back(std::make_shared<Data>((int64_t)i));
       record->emplace_back(std::make_shared<Data>("myhost"));
@@ -34,21 +34,14 @@ int main(int argc, const char* argv[])
     gettimeofday(&t1, NULL);
     const int32_t fnum = (int32_t)random();
     int32_t inum = -1;
-    PIndex index = table->m_indexes["num"];
-    auto it = index->m_index.find(Data(fnum).hash());
-    if(it != index->m_index.end()) {
-      Index::PListRecordIds recIds = it->second;
-      size_t  irec = recIds->front();
-      PRecord record = table->m_records.at(irec);
-      PData   dataNum = record->at(index->m_column);
-      inum = dataNum->m_data.m_i32;
-      std::cout << "recIds: " << recIds->size() << std::endl;
-    }
+    table->findByIndex("num", fnum, [&inum](PRecord record, size_t icolumn) {
+      PData data = record->at(icolumn);
+      inum = data->m_data.m_i32;
+    });
     gettimeofday(&t2, NULL);
     timersub(&t2, &t1, &res);
     std::cout << "find: " << fnum << " -> " << inum << " " << res.tv_sec << "." << res.tv_usec << std::endl;
     std::cout << "hash: " << Data(fnum).hash() << " " << Data(inum).hash() << std::endl;
-    //table->print();
 
   } catch(const std::exception& err) {
     std::cerr << "Error: " << err.what() << std::endl;

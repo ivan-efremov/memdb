@@ -4,6 +4,7 @@
 #pragma once
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
@@ -59,7 +60,7 @@ struct Index {
   typedef std::deque<size_t>              ListRecordIds;
   typedef std::shared_ptr<ListRecordIds>  PListRecordIds;
   size_t                            m_column;
-  std::map<size_t, PListRecordIds>  m_index;
+  std::map<size_t, PListRecordIds>  m_index;   ///< hash,irecords
 };
 
 typedef std::shared_ptr<Index>  PIndex;
@@ -82,6 +83,9 @@ struct Table {
   void        deleteRecord(size_t a_irecord);
   void        createIndex(const std::string& a_columnName);
   void        print() const;
+  void        findByIndex(const std::string& a_columnName,
+                          const Data& a_data,
+                          const std::function<void(PRecord,size_t)>& a_fn) const;
   ssize_t     getColumnNumber(const std::string& a_columnName) const;
   std::string getColumnName(size_t a_number) const;
   Iterator    begin();
