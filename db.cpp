@@ -328,8 +328,8 @@ void Table::findByIndex(
     auto it = index->m_index.find(a_data.hash());
     if(it != index->m_index.end()) {
       Index::PListRecordIds recIds = it->second;
-      for(auto r=recIds->begin(); r!=recIds->end(); ++r) {
-        PRecord record = m_records.at(*r);
+      for(auto irec=recIds->begin(); irec!=recIds->end(); ++irec) {
+        PRecord record = m_records.at(*irec);
         a_fn(record, index->m_column);
       }
     }
