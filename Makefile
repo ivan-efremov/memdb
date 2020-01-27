@@ -1,5 +1,5 @@
 CXX      = g++
-CXXFLAGS = -ggdb -Wall -pthread -std=c++11
+CXXFLAGS = -ggdb -Wall -O2 -pthread -std=c++11
 LDFLAGS  = -ggdb
 
 all: test

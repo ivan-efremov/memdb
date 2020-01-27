@@ -88,8 +88,7 @@ Data::Data(const std::string& a_str):
   m_type(tString), m_size(a_str.length() + 1)
 {
   m_data.m_str = new char [m_size];
-  strncpy(m_data.m_str, a_str.data(), a_str.length());
-  m_data.m_str[a_str.length()] = '\0';
+  memcpy(m_data.m_str, a_str.data(), m_size);
 }
 
 Data::Data(const void* a_bin, size_t a_length):
@@ -220,7 +219,7 @@ std::string Data::toString() const
       const uint8_t* bin = (const uint8_t*)m_data.m_bin;
       const uint8_t* end = bin + m_size;
       std::string    str;
-      str.reserve(1024);
+      str.reserve(2 * m_size);
       while(bin != end) {
         sprintf(buf, "%02x", *bin++);
         str += buf;
